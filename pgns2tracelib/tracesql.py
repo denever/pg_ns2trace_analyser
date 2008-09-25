@@ -76,9 +76,9 @@ create_send_event_table = """create table send_events
  nodeid integer,
  tracelvl text,
  reason text,
- ip_src text,
+ ip_src integer,
  ip_src_prt integer,
- ip_dst text,
+ ip_dst integer,
  ip_dst_prt integer,
  ip_type text,
  ip_size integer,
@@ -92,9 +92,9 @@ create_recv_event_table = """create table recv_events
  nodeid integer,
  tracelvl text,
  reason text,
- ip_src text,
+ ip_src integer,
  ip_src_prt integer,
- ip_dst text,
+ ip_dst integer,
  ip_dst_prt integer,
  ip_type text,
  ip_size integer,
@@ -108,9 +108,9 @@ create_drop_event_table = """create table drop_events
  nodeid integer,
  tracelvl text,
  reason text,
- ip_src text,
+ ip_src integer,
  ip_src_prt integer,
- ip_dst text,
+ ip_dst integer,
  ip_dst_prt integer,
  ip_type text,
  ip_size integer,
@@ -124,9 +124,9 @@ create_fwrd_event_table = """create table fwrd_events
  nodeid integer,
  tracelvl text,
  reason text,
- ip_src text,
+ ip_src integer,
  ip_src_prt integer,
- ip_dst text,
+ ip_dst integer,
  ip_dst_prt integer,
  ip_type text,
  ip_size integer,
@@ -569,8 +569,6 @@ class TraceSql:
 
         return (sent_mac_dsts, recv_mac_dsts, drop_mac_dsts)
 
-
-
 def create_db_from_trace(database_name, input_filename):
     conn = sqlite3.connect(database_name)
 
@@ -592,19 +590,22 @@ def create_db_from_trace(database_name, input_filename):
         fwrd_event_found = find_fwrd_event.search(line)
 
         time = get_event_time.search(line).group(1)
-        node_id = get_node_id.search(line).group(1)
+
+        node_id_found = get_node_id.search(line)
+        node_id = int(node_id_found.group(1)) if node_id_found else None
+
         tracelvl = get_trace_lvl.search(line).group(1)
         
         event_rsn_found = get_event_rsn.search(line)
         event_rsn = event_rsn_found.group(1) if event_rsn_found else None
         
         ip_src_found = get_pktip_src.search(line)
-        ip_src = ip_src_found.group(1) if ip_src_found else None
+        ip_src = int(ip_src_found.group(1)) if ip_src_found else None
         ip_src_prt = int(ip_src_found.group(2)) if ip_src_found else None
         
         ip_dst_found = get_pktip_dst.search(line)
-        ip_dst = ip_dst_found.group(1) if ip_dst_found else None
-        ip_dst_prt = int(ip_dst_found.group(1)) if ip_dst_found else None            
+        ip_dst = int(ip_dst_found.group(1)) if ip_dst_found else None
+        ip_dst_prt = int(ip_dst_found.group(2)) if ip_dst_found else None            
         
         ip_type_found = get_pktip_type.search(line)
         ip_type = ip_type_found.group(1) if ip_type_found else None
@@ -624,19 +625,19 @@ def create_db_from_trace(database_name, input_filename):
         app_found = get_pkapp_proto.search(line)
         app = app_found.group(1) if app_found else None
         
-        t = (time, int(node_id), tracelvl, event_rsn, ip_src, ip_src_prt, ip_dst, ip_dst_prt, ip_type, ip_size, flowid, uniqid, ip_ttl, app)
+        t = (time, node_id, tracelvl, event_rsn, ip_src, ip_src_prt, ip_dst, ip_dst_prt, ip_type, ip_size, flowid, uniqid, ip_ttl, app)
         
         if send_event_found:
             c.execute(insert_send_event, t)
 
-            if recv_event_found:
-                c.execute(insert_recv_event, t)
+        if recv_event_found:
+            c.execute(insert_recv_event, t)
 
-            if drop_event_found:
-                c.execute(insert_drop_event, t)
+        if drop_event_found:
+            c.execute(insert_drop_event, t)
 
-            if fwrd_event_found:
-                c.execute(insert_fwrd_event, t)
+        if fwrd_event_found:
+            c.execute(insert_fwrd_event, t)
             
-        conn.commit()
-        c.close()
+    conn.commit()
+    c.close()
