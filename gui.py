@@ -36,12 +36,18 @@ import threading
 
 from gtk import *
 from gtk import glade
-from NS2NewTraceSql import NS2NewTraceSql
+
+from pgns2tracelib.filemanager import FileManager
+from pgns2tracelib.tracemanager import TraceManager
 
 gdk.threads_init()
 
 class Gui:
     def __init__(self):
+        self.fm = FileManager()
+        self.tm = TraceManager()
+        self.fm.start()
+        self.tm.start()
         self.wtree = glade.XML('glade/traceanalyser.glade')
         self.wtree.get_widget('win_traceanalyser').connect("destroy", main_quit)
     	self.wtree.get_widget('win_traceanalyser').show()        
@@ -116,44 +122,12 @@ class Gui:
         self.wtree.get_widget('dlg_newfile').hide()
         filename = self.wtree.get_widget('dlg_newfile').get_filename()
         newprjname = self.wtree.get_widget('ent_newprjname').get_text() + '.pta'
-        self.trace_db = NS2NewTraceSql(newprjname, filename)
-
-        for node_id in self.trace_db.get_nodes():
-            self.node_list.append([node_id])
-
-        flow_ids = self.trace_db.get_flows()
-        flow_ids.sort()
-        flow_src_dst = self.trace_db.get_src_dst_per_flow()
-        flow_types = self.trace_db.get_flow_types()
-        
-        for flow_id in flow_ids:
-            (src,dst) = flow_src_dst[flow_id]
-            flow_type = flow_types[flow_id]
-            row = flow_id,src,dst,flow_type
-            self.flow_list.append(row)
-
-        self.wtree.get_widget('mnuitm_stats').show()
+        self.fm = open_tracefile(newprjname, filename)
         
     def on_btn_open_clicked(self, widget):
         self.wtree.get_widget('dlg_openfile').hide()
         filename = self.wtree.get_widget('dlg_openfile').get_filename()
-        self.trace_db = NS2NewTraceSql(filename)
-        
-        for node_id in self.trace_db.get_nodes():
-            self.node_list.append([node_id])
-
-        flow_ids = self.trace_db.get_flows()
-        flow_ids.sort()
-        flow_src_dst = self.trace_db.get_src_dst_per_flow()
-        flow_types = self.trace_db.get_flow_types()
-        
-        for flow_id in flow_ids:
-            (src,dst) = flow_src_dst[flow_id]
-            flow_type = flow_types[flow_id]
-            row = flow_id,src,dst,flow_type
-            self.flow_list.append(row)
-
-        self.wtree.get_widget('mnuitm_stats').show()
+        self.tm.open_db(filename)
         
     def on_btn_open_cancel_clicked(self, widget):
         self.wtree.get_widget('dlg_openfile').hide()
@@ -162,8 +136,44 @@ class Gui:
         self.wtree.get_widget('dlg_savefile').hide()
         
     def on_mnuitm_exit_activate(self, widget):
+        self.tm.stop()
+        self.fm.stop()
+        self.tm.join()
+        self.fm.join()
         gtk.main_quit()
 
 if __name__ == "__main__":
     gui = Gui()
     main()
+#         for node_id in self.trace_db.get_nodes():
+#             self.node_list.append([node_id])
+
+#         flow_ids = self.trace_db.get_flows()
+#         flow_ids.sort()
+#         flow_src_dst = self.trace_db.get_src_dst_per_flow()
+#         flow_types = self.trace_db.get_flow_types()
+        
+#         for flow_id in flow_ids:
+#             (src,dst) = flow_src_dst[flow_id]
+#             flow_type = flow_types[flow_id]
+#             row = flow_id,src,dst,flow_type
+#             self.flow_list.append(row)
+
+#         self.wtree.get_widget('mnuitm_stats').show()
+#         self.trace_db = NS2NewTraceSql(filename)
+        
+#         for node_id in self.trace_db.get_nodes():
+#             self.node_list.append([node_id])
+
+#         flow_ids = self.trace_db.get_flows()
+#         flow_ids.sort()
+#         flow_src_dst = self.trace_db.get_src_dst_per_flow()
+#         flow_types = self.trace_db.get_flow_types()
+        
+#         for flow_id in flow_ids:
+#             (src,dst) = flow_src_dst[flow_id]
+#             flow_type = flow_types[flow_id]
+#             row = flow_id,src,dst,flow_type
+#             self.flow_list.append(row)
+
+#         self.wtree.get_widget('mnuitm_stats').show()
