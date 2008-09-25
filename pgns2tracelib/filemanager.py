@@ -28,32 +28,39 @@
 
 import os
 import gobject
-from threading import Thread
+import Queue
+from threading import Thread, Event
 from tracesql import create_db_from_trace
 
 class FileManager(gobject.GObject, Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.to_open_files = []
-#        self.to_remove_files = []
+        self.running = True
+        self.files_to_open = Queue.Queue()
+        self.evnt_new_file = Event()
         
     def open_tracefile(self, db_filename, trace_filename):
-        self.to_open_files.append((db_filename, trace_filename))
-    
-#    def open_db(self,  db_filename):
-#        self.to_open_files.append((db_filename, None))
+        self.files_to_open.put((db_filename, trace_filename))
+        self.evnt_new_file.set()
         
-#    def remove_db(self, db_filename):
-#        self.to_remove_files.append(db_filename)
+    def stop(self):
+        self.running = False
+        self.evnt_new_file.set()
         
     def run(self):
-        while 1:
-            if len(self.to_open_files):
-                (db_filename, trace_filename) = self.to_open_files.pop()
-                print 'opening',trace_filename,'in',db_filename
-                create_db_from_trace(db_filename, trace_filename)
-                # emit signal
+        while self.running:
+            if self.files_to_open.empty():
+                print 'Waiting for a new file'
+                self.evnt_new_file.wait()
+                self.evnt_new_file.clear()
+                print 'New file arrived'
+
+                if self.running == False:
+                    break
                 
-#            if len(self.to_remove_files):
-#                os.remove(self.to_remove_files.pop())
-#                # emit signal
+            (db_filename, trace_filename) = self.files_to_open.get()
+            print 'Opening',trace_filename,'in',db_filename
+            create_db_from_trace(db_filename, trace_filename)
+            print 'Opened',trace_filename,'in',db_filename
+            
+        print 'Thread stopped'
