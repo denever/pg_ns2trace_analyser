@@ -30,14 +30,13 @@ from pgns2tracelib.tracesql import TraceSql
 from pgns2tracelib.tracesql import create_db_from_trace
 
 class TraceManager(Thread):
-    operations = Queue.Queue()
-    results = Queue.Queue()
-    
     def __init__(self):
         Thread.__init__(self)
         self.db_name = None
         self.tracesql = None
         self.running = True
+        self.operations = Queue.Queue()
+        self.results = Queue.Queue()
         
     def open_db(self, db_name):
         self.db_name = db_name
