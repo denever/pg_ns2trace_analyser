@@ -29,7 +29,7 @@
 import os
 import gobject
 from threading import Thread
-from NS2NewTraceSql import create_db_from_trace
+from tracesql import create_db_from_trace
 
 class FileManager(gobject.GObject, Thread):
     def __init__(self):
