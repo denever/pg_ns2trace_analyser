@@ -50,12 +50,17 @@ class FileManager(gobject.GObject, Thread):
     def run(self):
         while self.running:
             if self.files_to_open.empty():
+                print 'Waiting for a new file'
                 self.evnt_new_file.wait()
                 self.evnt_new_file.clear()
+                print 'New file arrived'
 
                 if self.running == False:
                     break
                 
             (db_filename, trace_filename) = self.files_to_open.get()
+            print 'Opening',trace_filename,'in',db_filename
             create_db_from_trace(db_filename, trace_filename)
-
+            print 'Opened',trace_filename,'in',db_filename
+            
+        print 'Thread stopped'

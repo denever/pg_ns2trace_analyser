@@ -38,6 +38,7 @@ class TraceManager(Thread):
         self.operations = Queue.Queue()
         self.results = Queue.Queue()
         self.evnt_new_item = Event()
+        self.evnt_new_rslt = Event()
         self.evnt_new_db = Event()
         
     def open_db(self, db_name):
@@ -120,6 +121,10 @@ class TraceManager(Thread):
             self.evnt_new_item.set()
             
     def get_result(self):
+#         if self.results.empty():
+#             self.evnt_new_rslt.wait()
+#             self.evnt_new_rslt.clear()
+
         return self.results.get()
 
     def stop(self):
@@ -129,27 +134,36 @@ class TraceManager(Thread):
     def run(self):
         while self.running:
             if not self.tracesql:
+                print 'Waiting for a db to open'                
                 self.evnt_new_db.wait()
                 self.tracesql = TraceSql(self.db_name)
 
             if self.tracesql:
                 if self.operations.empty():
+                    print 'queue size', self.operations.qsize()
+                    print 'Waiting for an operation'
                     self.evnt_new_item.wait()
-                    self.evnt_new_item.clear()
                     
                     if self.running == False:
+                        self.evnt_new_item.clear()
+                        print 'Stopping thread'                        
                         break
-
+                    
+                self.evnt_new_item.clear()
+                print 'A new operation arrived'
                 operation = self.operations.get()
-
+                print 'Operation:', operation
+                
                 if operation[1] != None:
                     result = operation[0]([arg for arg in operation[1:] ])
                     self.results.put(result)
+                    self.evnt_new_rslt.set()
                 else:
                     result = operation[0]()
                     self.results.put(result)
-
+                    self.evnt_new_rslt.set()
                 print result
+        print 'Thread stopped'
 
     
 #     def query_trace_maconly_pkts(self):
