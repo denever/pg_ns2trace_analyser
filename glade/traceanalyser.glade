@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Sep  8 18:56:25 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Sep 26 09:07:32 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="win_traceanalyser">
     <property name="default_width">500</property>
@@ -81,10 +81,27 @@
                   <widget class="GtkMenu" id="mnu_stats">
                     <property name="visible">True</property>
                     <child>
+                      <widget class="GtkMenuItem" id="mnuitm_get_nodes">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Get _Nodes Id</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_mnuitm_get_nodes_activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="mnuitm_get_flows">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Get _Flows Id</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_mnuitm_get_flows_activate"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkMenuItem" id="mnuitm_avgthroughput">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Average _Throughput</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_mnuitm_avgthroughput_activate"/>
                       </widget>
                     </child>
                     <child>
@@ -92,6 +109,7 @@
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Average _Delay</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_mnuitm_avgdelay_activate"/>
                       </widget>
                     </child>
                     <child>
@@ -99,6 +117,7 @@
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Average _Jitter</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_mnuitm_avgjitter_activate"/>
                       </widget>
                     </child>
                     <child>
