@@ -128,7 +128,55 @@ class Gui:
         self.wtree.get_widget('dlg_openfile').hide()
         filename = self.wtree.get_widget('dlg_openfile').get_filename()
         self.tm.open_db(filename)
+        self.wtree.get_widget('mnuitm_stats').show()
         
+    def on_mnuitm_get_nodes_activate(self, widget):
+        self.tm.query_nodes()
+        node_ids = self.tm.get_result()
+        for node_id in node_ids:
+            self.node_list.append([node_id])
+            
+    def on_mnuitm_get_flows_activate(self, widget):
+        self.tm.query_flows()
+        self.tm.query_src_dst_per_flow()
+        self.tm.query_flow_types()
+        flow_ids = self.tm.get_result()
+        flow_ids.sort()
+        flow_src_dst = self.tm.get_result()
+        flow_types = self.tm.get_result()
+        
+        for flow_id in flow_ids:
+            (src,dst) = flow_src_dst[flow_id]
+            flow_type = flow_types[flow_id]
+            row = flow_id,src,dst,flow_type
+            self.flow_list.append(row)
+
+    def on_mnuitm_avgthroughput_activate(self, widget):
+        sel = self.tvw_flows.get_selection()
+        model, sel_iter = sel.get_selected()
+        print model, sel_iter
+        print self.flow_list.get_value(sel_iter)
+        
+#         self.tm.query_sent_pkts_times_at(ip_src, flow_id)
+#         self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
+#         self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, hdr_size)
+        
+#         sent_pkts = self.tm.get_result()
+#         recv_pkts = self.tm.get_result()
+#         tota_size = self.tm.get_result()
+
+#         start_time = Decimal(sent_pkts[0][1])
+#         stop_time = Decimal(recv_pkts[-1][1])                
+
+#         delta = stop_time - start_time
+#         data_size = Decimal(tota_size)
+#         th_bps = data_size / delta
+#         conv = Decimal(8) / Decimal(1000)
+        
+#         avg_tput = th_bps*conv
+        
+#         print 'Avg tput', avg_tput
+
     def on_btn_open_cancel_clicked(self, widget):
         self.wtree.get_widget('dlg_openfile').hide()
 
@@ -145,21 +193,8 @@ class Gui:
 if __name__ == "__main__":
     gui = Gui()
     main()
-#         for node_id in self.trace_db.get_nodes():
-#             self.node_list.append([node_id])
 
 #         flow_ids = self.trace_db.get_flows()
-#         flow_ids.sort()
-#         flow_src_dst = self.trace_db.get_src_dst_per_flow()
-#         flow_types = self.trace_db.get_flow_types()
-        
-#         for flow_id in flow_ids:
-#             (src,dst) = flow_src_dst[flow_id]
-#             flow_type = flow_types[flow_id]
-#             row = flow_id,src,dst,flow_type
-#             self.flow_list.append(row)
-
-#         self.wtree.get_widget('mnuitm_stats').show()
 #         self.trace_db = NS2NewTraceSql(filename)
         
 #         for node_id in self.trace_db.get_nodes():
