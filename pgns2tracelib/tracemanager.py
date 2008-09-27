@@ -77,17 +77,20 @@ class TraceManager(Thread):
             
     def query_trace_of(self, unique_id):
         if self.tracesql:
-            self.operations.put( (self.tracesql.get_trace_of, unique_id) )
+            args = {'unique_id': unique_id}
+            self.operations.put( (self.tracesql.get_trace_of, args) )
             self.evnt_new_item.set()
             
     def query_recv_pkts_num_at_node(self, node_id):
         if self.tracesql:
-            self.operations.put( (self.tracesql.count_recv_pkt_at_node, node_id) )
+            args = {'node_id': node_id}            
+            self.operations.put( (self.tracesql.count_recv_pkt_at_node, args) )
             self.evnt_new_item.set()
             
     def query_pkts_at_macdst(self, mac_dest):
         if self.tracesql:
-            self.operations.put( (self.tracesql.get_pkts_at_macdst, mac_dest) )
+            args = {'mac_dest': mac_dest}            
+            self.operations.put( (self.tracesql.get_pkts_at_macdst, args) )
             self.evnt_new_item.set()
             
     def query_pkts_at_lvl(self, lvl):
@@ -100,19 +103,22 @@ class TraceManager(Thread):
             self.operations.put( (self.tracesql.get_pkts_flowid, flowid, lvl) )
             self.evnt_new_item.set()
             
-    def query_sent_pkts_times_at(self, node_id, flow_id, lvl):
+    def query_sent_pkts_times_at(self, node_id, flow_id):
         if self.tracesql:
-            self.operations.put( (self.tracesql.get_sent_pkts_times_at, node_id, flow_id, lvl) )
+            args = {'node_id': node_id, 'flow_id': flow_id}            
+            self.operations.put( (self.tracesql.get_sent_pkts_times_at, args) )
             self.evnt_new_item.set()
             
-    def query_recv_pkts_times_at(self, node_id, flow_id, lvl):
+    def query_recv_pkts_times_at(self, node_id, flow_id):
         if self.tracesql:
-            self.operations.put( (self.tracesql.get_recv_pkts_times_at, node_id, flow_id, lvl) )
+            args = {'node_id': node_id, 'flow_id': flow_id}                        
+            self.operations.put( (self.tracesql.get_recv_pkts_times_at, args) )
             self.evnt_new_item.set()
             
-    def query_recv_flow_total_size_at(self, node_id, flow_id, hdr_size, lvl):
+    def query_recv_flow_total_size_at(self, node_id, flow_id, hdr_size):
         if self.tracesql:
-            self.operations.put( (self.tracesql.get_recv_flow_total_size_at, node_id, flow_id, hdr_size, lvl) )
+            args = {'node_id': node_id, 'flow_id': flow_id, 'hdr_size': hdr_size}                                    
+            self.operations.put( (self.tracesql.get_recv_flow_total_size_at, args) )
             self.evnt_new_item.set()
             
     def query_sent_bursts_per_flow(self, lvl):
@@ -140,7 +146,6 @@ class TraceManager(Thread):
 
             if self.tracesql:
                 if self.operations.empty():
-                    print 'queue size', self.operations.qsize()
                     print 'Waiting for an operation'
                     self.evnt_new_item.wait()
                     
@@ -151,15 +156,14 @@ class TraceManager(Thread):
                     
                 self.evnt_new_item.clear()
                 print 'A new operation arrived'
-                operation = self.operations.get()
-                print 'Operation:', operation
+                function, args = self.operations.get()
                 
-                if operation[1] != None:
-                    result = operation[0]([arg for arg in operation[1:] ])
+                if args != None:
+                    result = function(**args)
                     self.results.put(result)
                     self.evnt_new_rslt.set()
                 else:
-                    result = operation[0]()
+                    result = function()
                     self.results.put(result)
                     self.evnt_new_rslt.set()
                 print result
