@@ -33,6 +33,7 @@ pygtk.require('2.0')
 import gtk
 #import gobject
 import threading
+from decimal import Decimal
 
 from gtk import *
 from gtk import glade
@@ -122,7 +123,7 @@ class Gui:
         self.wtree.get_widget('dlg_newfile').hide()
         filename = self.wtree.get_widget('dlg_newfile').get_filename()
         newprjname = self.wtree.get_widget('ent_newprjname').get_text() + '.pta'
-        self.fm = open_tracefile(newprjname, filename)
+        self.fm.open_tracefile(newprjname, filename)
         
     def on_btn_open_clicked(self, widget):
         self.wtree.get_widget('dlg_openfile').hide()
@@ -154,28 +155,30 @@ class Gui:
     def on_mnuitm_avgthroughput_activate(self, widget):
         sel = self.tvw_flows.get_selection()
         model, sel_iter = sel.get_selected()
-        print model, sel_iter
-        print self.flow_list.get_value(sel_iter)
+        flow_id, ip_src, ip_dst = self.flow_list.get(sel_iter,0,1,2)
+        flow_id = int(flow_id)
+        ip_src = int(ip_src)
+        ip_dst = int(ip_dst)
         
-#         self.tm.query_sent_pkts_times_at(ip_src, flow_id)
-#         self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
-#         self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, hdr_size)
+        self.tm.query_sent_pkts_times_at(ip_src, flow_id)
+        self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
+        self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, 20)
         
-#         sent_pkts = self.tm.get_result()
-#         recv_pkts = self.tm.get_result()
-#         tota_size = self.tm.get_result()
+        sent_pkts = self.tm.get_result()
+        recv_pkts = self.tm.get_result()
+        tota_size = self.tm.get_result()
 
-#         start_time = Decimal(sent_pkts[0][1])
-#         stop_time = Decimal(recv_pkts[-1][1])                
+        start_time = Decimal(sent_pkts[0][1])
+        stop_time = Decimal(recv_pkts[-1][1])                
 
-#         delta = stop_time - start_time
-#         data_size = Decimal(tota_size)
-#         th_bps = data_size / delta
-#         conv = Decimal(8) / Decimal(1000)
+        delta = stop_time - start_time
+        data_size = Decimal(tota_size)
+        th_bps = data_size / delta
+        conv = Decimal(8) / Decimal(1000)
         
-#         avg_tput = th_bps*conv
+        avg_tput = th_bps*conv
         
-#         print 'Avg tput', avg_tput
+        print 'Avg tput', avg_tput
 
     def on_btn_open_cancel_clicked(self, widget):
         self.wtree.get_widget('dlg_openfile').hide()
