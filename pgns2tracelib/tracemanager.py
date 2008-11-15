@@ -24,14 +24,20 @@
 #                                                                         #
 ###########################################################################
 
+import gobject
 import Queue
 from threading import Thread, Event
 from pgns2tracelib.tracesql import TraceSql
 from pgns2tracelib.tracesql import create_db_from_trace
 
-class TraceManager(Thread):
+class TraceManager(Thread, gobject.GObject):
+    __gsignals__ = { 
+        'operation-completed' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        }
+    
     def __init__(self):
         Thread.__init__(self)
+        gobject.GObject.__init__(self)
         self.db_name = None
         self.tracesql = None
         self.running = True
@@ -166,6 +172,7 @@ class TraceManager(Thread):
                     result = function()
                     self.results.put(result)
                     self.evnt_new_rslt.set()
+                self.emit('operation-completed') 
                 print result
         print 'Thread stopped'
 

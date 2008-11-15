@@ -27,6 +27,7 @@
 ###########################################################################
 
 import pygtk
+import gobject
 
 pygtk.require('2.0')
 
@@ -50,12 +51,12 @@ class Gui:
         self.fm.start()
         self.tm.start()
         self.wtree = glade.XML('glade/traceanalyser.glade')
-        self.wtree.get_widget('win_traceanalyser').connect("destroy", main_quit)
     	self.wtree.get_widget('win_traceanalyser').show()        
  	dict = {}
 	for key in dir(self.__class__):
 	    dict[key] = getattr(self, key)
 	self.wtree.signal_autoconnect(dict)
+        self.tm.connect('operation-completed', self.on_operation_completed)
 
         self.tvw_nodes = self.wtree.get_widget('tvw_nodes')
 
@@ -105,6 +106,8 @@ class Gui:
         self.flt_prj.add_pattern('*.pta')
         self.wtree.get_widget('dlg_newfile').add_filter(self.flt_trace)
         self.wtree.get_widget('dlg_openfile').add_filter(self.flt_prj)
+        self.pgb_loading = self.wtree.get_widget('pgb_loading')
+        self.timeoutId = 0
         
     def on_mnuitm_new_activate(self, widget):
         self.wtree.get_widget('dlg_newprj').show()        
@@ -132,25 +135,33 @@ class Gui:
         self.wtree.get_widget('mnuitm_stats').show()
         
     def on_mnuitm_get_nodes_activate(self, widget):
+        self.timeoutId = gobject.timeout_add(100,self.on_operation_running)
+    	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_nodes()
-        node_ids = self.tm.get_result()
-        for node_id in node_ids:
-            self.node_list.append([node_id])
-            
+
+#        node_ids = self.tm.get_result()
+#        for node_id in node_ids:
+#            self.node_list.append([node_id])
+           
     def on_mnuitm_get_flows_activate(self, widget):
+        self.timeoutId = gobject.timeout_add(50, self.on_operation_running)        
+    	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_flows()
         self.tm.query_src_dst_per_flow()
         self.tm.query_flow_types()
-        flow_ids = self.tm.get_result()
-        flow_ids.sort()
-        flow_src_dst = self.tm.get_result()
-        flow_types = self.tm.get_result()
         
-        for flow_id in flow_ids:
-            (src,dst) = flow_src_dst[flow_id]
-            flow_type = flow_types[flow_id]
-            row = flow_id,src,dst,flow_type
-            self.flow_list.append(row)
+#        while 1:
+
+#         flow_ids = self.tm.get_result()
+#         flow_ids.sort()
+#         flow_src_dst = self.tm.get_result()
+#         flow_types = self.tm.get_result()
+        
+#         for flow_id in flow_ids:
+#             (src,dst) = flow_src_dst[flow_id]
+#             flow_type = flow_types[flow_id]
+#             row = flow_id,src,dst,flow_type
+#             self.flow_list.append(row)
 
     def on_mnuitm_avgthroughput_activate(self, widget):
         sel = self.tvw_flows.get_selection()
@@ -185,6 +196,13 @@ class Gui:
 
     def on_btn_save_cancel_clicked(self, widget):
         self.wtree.get_widget('dlg_savefile').hide()
+
+    def on_operation_completed(self, tm):
+        self.wtree.get_widget('dlg_loading').hide()
+        gobject.source_remove(self.timeoutId)
+
+    def on_operation_running(self):
+        self.pgb_loading.pulse()
         
     def on_mnuitm_exit_activate(self, widget):
         self.tm.stop()
@@ -192,6 +210,9 @@ class Gui:
         self.tm.join()
         self.fm.join()
         gtk.main_quit()
+  
+
+                   
 
 if __name__ == "__main__":
     gui = Gui()
