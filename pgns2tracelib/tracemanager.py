@@ -32,7 +32,7 @@ from pgns2tracelib.tracesql import create_db_from_trace
 
 class TraceManager(Thread, gobject.GObject):
     __gsignals__ = { 
-        'operation-completed' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        'operation-completed' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
         }
     
     def __init__(self):
@@ -132,12 +132,13 @@ class TraceManager(Thread, gobject.GObject):
             self.operations.put( (self.tracesql.get_sent_bursts_per_flow, lvl) )
             self.evnt_new_item.set()
             
-    def close_operations(self):
-        self.operations.put( (self.operations_end, None) )
+    def close_operations(self, operations_handler):
+        args = {'operations_handler': operations_handler}
+        self.operations.put( (self.operations_end, args) )
         self.evnt_new_item.set()
         
-    def operations_end(self):
-        self.emit('operation-completed') 
+    def operations_end(self, operations_handler):
+        self.emit('operation-completed', operations_handler) 
             
     def get_result(self):
 #         if self.results.empty():
@@ -173,11 +174,13 @@ class TraceManager(Thread, gobject.GObject):
                 
                 if args != None:
                     result = function(**args)
-                    self.results.put(result)
+                    if result:
+                        self.results.put(result)
                     self.evnt_new_rslt.set()
                 else:
                     result = function()
-                    self.results.put(result)
+                    if result:
+                        self.results.put(result)
                     self.evnt_new_rslt.set()
                 print result
         print 'Thread stopped'

@@ -54,7 +54,7 @@ class Gui:
 	for key in dir(self.__class__):
 	    dict[key] = getattr(self, key)
 	self.wtree.signal_autoconnect(dict)
-        self.tm.connect('operation-completed', self.on_operation_completed)
+        self.tm.connect('operation-completed', self.on_operations_completed)
 
         self.tvw_nodes = self.wtree.get_widget('tvw_nodes')
 
@@ -134,56 +134,61 @@ class Gui:
         self.wtree.get_widget('mnuitm_stats').show()
         
     def on_mnuitm_get_nodes_activate(self, widget):
-        self.timeoutId = gobject.timeout_add(300,self.on_operation_running)        
+        self.timeoutId = gobject.timeout_add(300,self.on_operations_running)        
     	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_nodes()
-        self.tm.close_operations()
+        self.tm.close_operations(self.display_nodes)
 
-#        node_ids = self.tm.get_result()
-#        for node_id in node_ids:
-#            self.node_list.append([node_id])
-           
     def on_mnuitm_get_flows_activate(self, widget):
-        self.timeoutId = gobject.timeout_add(300,self.on_operation_running)        
+        self.timeoutId = gobject.timeout_add(300,self.on_operations_running)        
     	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_flows()
         self.tm.query_src_dst_per_flow()
         self.tm.query_flow_types()
-        self.tm.close_operations()
-        
-#        while 1:
-
-#         flow_ids = self.tm.get_result()
-#         flow_ids.sort()
-#         flow_src_dst = self.tm.get_result()
-#         flow_types = self.tm.get_result()
-        
-#         for flow_id in flow_ids:
-#             (src,dst) = flow_src_dst[flow_id]
-#             flow_type = flow_types[flow_id]
-#             row = flow_id,src,dst,flow_type
-#             self.flow_list.append(row)
+        self.tm.close_operations(self.display_flows)
 
     def on_mnuitm_avgthroughput_activate(self, widget):
         sel = self.tvw_flows.get_selection()
-        model, sel_iter = sel.get_selected()
-        flow_id, ip_src, ip_dst = self.flow_list.get(sel_iter,0,1,2)
-        flow_id = int(flow_id)
-        ip_src = int(ip_src)
-        ip_dst = int(ip_dst)
+        if sel:
+            self.timeoutId = gobject.timeout_add(300,self.on_operations_running)        
+            self.wtree.get_widget('dlg_loading').show()
+
+            model, sel_iter = sel.get_selected()
+            flow_id, ip_src, ip_dst = self.flow_list.get(sel_iter,0,1,2)
+            flow_id = int(flow_id)
+            ip_src = int(ip_src)
+            ip_dst = int(ip_dst)
         
-        self.tm.query_sent_pkts_times_at(ip_src, flow_id)
-        self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
-        self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, 20)
-        self.tm.close_operations()
+            self.tm.query_sent_pkts_times_at(ip_src, flow_id)
+            self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
+            self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, 20)
+            self.tm.close_operations(self.calc_avgthroughput)
+           
+    def display_nodes(self):
+        node_ids = self.tm.get_result()
+        for node_id in node_ids:
+            self.node_list.append([node_id])
+
+    def display_flows(self):
+         flow_ids = self.tm.get_result()
+         flow_ids.sort()
+         flow_src_dst = self.tm.get_result()
+         flow_types = self.tm.get_result()
         
+         for flow_id in flow_ids:
+             (src,dst) = flow_src_dst[flow_id]
+             flow_type = flow_types[flow_id]
+             row = flow_id,src,dst,flow_type
+             self.flow_list.append(row)
+        
+    def calc_avgthroughput(self):
         sent_pkts = self.tm.get_result()
         recv_pkts = self.tm.get_result()
         tota_size = self.tm.get_result()
-
+        
         start_time = Decimal(sent_pkts[0][1])
         stop_time = Decimal(recv_pkts[-1][1])                
-
+        
         delta = stop_time - start_time
         data_size = Decimal(tota_size)
         th_bps = data_size / delta
@@ -199,11 +204,13 @@ class Gui:
     def on_btn_save_cancel_clicked(self, widget):
         self.wtree.get_widget('dlg_savefile').hide()
 
-    def on_operation_completed(self, tm):
+    def on_operations_completed(self, tm, operations_handler):
         self.wtree.get_widget('dlg_loading').hide()
-        gobject.source_remove(self.timeoutId)        
-
-    def on_operation_running(self):
+        gobject.source_remove(self.timeoutId)
+        
+        operations_handler()
+        
+    def on_operations_running(self):
         self.pgb_loading.pulse()
         return True
         
