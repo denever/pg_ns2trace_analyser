@@ -182,7 +182,6 @@ class TraceManager(Thread, gobject.GObject):
                     if result:
                         self.results.put(result)
                     self.evnt_new_rslt.set()
-                print result
         print 'Thread stopped'
 
 gobject.type_register(TraceManager)
