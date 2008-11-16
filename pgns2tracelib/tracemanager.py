@@ -132,6 +132,13 @@ class TraceManager(Thread, gobject.GObject):
             self.operations.put( (self.tracesql.get_sent_bursts_per_flow, lvl) )
             self.evnt_new_item.set()
             
+    def close_operations(self):
+        self.operations.put( (self.operations_end, None) )
+        self.evnt_new_item.set()
+        
+    def operations_end(self):
+        self.emit('operation-completed') 
+            
     def get_result(self):
 #         if self.results.empty():
 #             self.evnt_new_rslt.wait()
@@ -172,10 +179,10 @@ class TraceManager(Thread, gobject.GObject):
                     result = function()
                     self.results.put(result)
                     self.evnt_new_rslt.set()
-                self.emit('operation-completed') 
                 print result
         print 'Thread stopped'
 
+gobject.type_register(TraceManager)
     
 #     def query_trace_maconly_pkts(self):
 #         It is possibile to select trace level (default is 'MAC')

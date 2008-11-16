@@ -42,8 +42,6 @@ from gtk import glade
 from pgns2tracelib.filemanager import FileManager
 from pgns2tracelib.tracemanager import TraceManager
 
-gdk.threads_init()
-
 class Gui:
     def __init__(self):
         self.fm = FileManager()
@@ -107,6 +105,7 @@ class Gui:
         self.wtree.get_widget('dlg_newfile').add_filter(self.flt_trace)
         self.wtree.get_widget('dlg_openfile').add_filter(self.flt_prj)
         self.pgb_loading = self.wtree.get_widget('pgb_loading')
+        self.pgb_loading.set_pulse_step(0.3)
         self.timeoutId = 0
         
     def on_mnuitm_new_activate(self, widget):
@@ -135,20 +134,22 @@ class Gui:
         self.wtree.get_widget('mnuitm_stats').show()
         
     def on_mnuitm_get_nodes_activate(self, widget):
-        self.timeoutId = gobject.timeout_add(100,self.on_operation_running)
+        self.timeoutId = gobject.timeout_add(300,self.on_operation_running)        
     	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_nodes()
+        self.tm.close_operations()
 
 #        node_ids = self.tm.get_result()
 #        for node_id in node_ids:
 #            self.node_list.append([node_id])
            
     def on_mnuitm_get_flows_activate(self, widget):
-        self.timeoutId = gobject.timeout_add(50, self.on_operation_running)        
+        self.timeoutId = gobject.timeout_add(300,self.on_operation_running)        
     	self.wtree.get_widget('dlg_loading').show()
         self.tm.query_flows()
         self.tm.query_src_dst_per_flow()
         self.tm.query_flow_types()
+        self.tm.close_operations()
         
 #        while 1:
 
@@ -174,6 +175,7 @@ class Gui:
         self.tm.query_sent_pkts_times_at(ip_src, flow_id)
         self.tm.query_recv_pkts_times_at(ip_dst, flow_id)
         self.tm.query_recv_flow_total_size_at(ip_dst, flow_id, 20)
+        self.tm.close_operations()
         
         sent_pkts = self.tm.get_result()
         recv_pkts = self.tm.get_result()
@@ -199,10 +201,11 @@ class Gui:
 
     def on_operation_completed(self, tm):
         self.wtree.get_widget('dlg_loading').hide()
-        gobject.source_remove(self.timeoutId)
+        gobject.source_remove(self.timeoutId)        
 
     def on_operation_running(self):
         self.pgb_loading.pulse()
+        return True
         
     def on_mnuitm_exit_activate(self, widget):
         self.tm.stop()
@@ -210,11 +213,9 @@ class Gui:
         self.tm.join()
         self.fm.join()
         gtk.main_quit()
-  
-
-                   
 
 if __name__ == "__main__":
+    gobject.threads_init()
     gui = Gui()
     main()
 
