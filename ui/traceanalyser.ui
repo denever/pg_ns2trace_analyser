@@ -1,0 +1,572 @@
+<?xml version="1.0"?>
+<!--Generated with glade3 3.4.5 on Sun Oct 26 10:14:15 2008 -->
+<interface>
+  <object class="GtkUIManager" id="uimanager1">
+    <child>
+      <object class="GtkActionGroup" id="actiongroup1">
+        <child>
+          <object class="GtkAction" id="mnuitm_file">
+            <property name="name">mnuitm_file</property>
+            <property name="label" translatable="yes">_File</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_new">
+            <property name="stock_id" translatable="yes">gtk-new</property>
+            <property name="name">mnuitm_new</property>
+            <signal handler="on_mnuitm_new_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_open">
+            <property name="stock_id" translatable="yes">gtk-open</property>
+            <property name="name">mnuitm_open</property>
+            <signal handler="on_mnuitm_open_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_save">
+            <property name="stock_id" translatable="yes">gtk-save</property>
+            <property name="name">mnuitm_save</property>
+            <signal handler="on_mnuitm_save_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_saveas">
+            <property name="stock_id" translatable="yes">gtk-save-as</property>
+            <property name="name">mnuitm_saveas</property>
+            <signal handler="on_mnuitm_saveas_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_exit">
+            <property name="stock_id" translatable="yes">gtk-quit</property>
+            <property name="name">mnuitm_exit</property>
+            <signal handler="on_mnuitm_exit_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_stats">
+            <property name="name">mnuitm_stats</property>
+            <property name="label" translatable="yes">_Statistics</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_get_nodes">
+            <property name="name">mnuitm_get_nodes</property>
+            <property name="label" translatable="yes">Get _Nodes Id</property>
+            <signal handler="on_mnuitm_get_nodes_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_get_flows">
+            <property name="name">mnuitm_get_flows</property>
+            <property name="label" translatable="yes">Get _Flows Id</property>
+            <signal handler="on_mnuitm_get_flows_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_avgthroughput">
+            <property name="name">mnuitm_avgthroughput</property>
+            <property name="label" translatable="yes">Average _Throughput</property>
+            <signal handler="on_mnuitm_avgthroughput_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_avgdelay">
+            <property name="name">mnuitm_avgdelay</property>
+            <property name="label" translatable="yes">Average _Delay</property>
+            <signal handler="on_mnuitm_avgdelay_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_avgjitter">
+            <property name="name">mnuitm_avgjitter</property>
+            <property name="label" translatable="yes">Average _Jitter</property>
+            <signal handler="on_mnuitm_avgjitter_activate" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_paste">
+            <property name="stock_id" translatable="yes">gtk-paste</property>
+            <property name="name">mnuitm_paste</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_delete">
+            <property name="stock_id" translatable="yes">gtk-delete</property>
+            <property name="name">mnuitm_delete</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_view">
+            <property name="name">mnuitm_view</property>
+            <property name="label" translatable="yes">_Visualizza</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_help">
+            <property name="name">mnuitm_help</property>
+            <property name="label" translatable="yes">A_iuto</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="mnuitm_about">
+            <property name="stock_id" translatable="yes">gtk-about</property>
+            <property name="name">mnuitm_about</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <ui>
+      <menubar name="menubar1">
+        <menu action="mnuitm_file">
+          <menuitem action="mnuitm_new"/>
+          <menuitem action="mnuitm_open"/>
+          <menuitem action="mnuitm_save"/>
+          <menuitem action="mnuitm_saveas"/>
+          <separator/>
+          <menuitem action="mnuitm_exit"/>
+        </menu>
+        <menu action="mnuitm_stats">
+          <menuitem action="mnuitm_get_nodes"/>
+          <menuitem action="mnuitm_get_flows"/>
+          <menuitem action="mnuitm_avgthroughput"/>
+          <menuitem action="mnuitm_avgdelay"/>
+          <menuitem action="mnuitm_avgjitter"/>
+          <menuitem action="mnuitm_paste"/>
+          <menuitem action="mnuitm_delete"/>
+        </menu>
+        <menuitem action="mnuitm_view"/>
+        <menu action="mnuitm_help">
+          <menuitem action="mnuitm_about"/>
+        </menu>
+      </menubar>
+    </ui>
+  </object>
+  <object class="GtkWindow" id="win_traceanalyser">
+    <property name="default_width">500</property>
+    <property name="default_height">400</property>
+    <signal handler=" on_mnuitm_exit_activate" name="destroy"/>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkMenuBar" constructor="uimanager1" id="menubar1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolbar" id="toolbar1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="nbk_main">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <child>
+                  <object class="GtkTreeView" id="tvw_nodes">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="headers_clickable">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="lbl_nodes">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Nodes</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolledwindow2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                <child>
+                  <object class="GtkTreeView" id="tvw_flows">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="headers_clickable">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="lbl_flows">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Flows</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkViewport" id="viewport1">
+                <property name="visible">True</property>
+                <property name="resize_mode">GTK_RESIZE_QUEUE</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="lbl_boh">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">boh</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar1">
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkFileChooserDialog" id="dlg_openfile">
+    <property name="border_width">5</property>
+    <property name="modal">True</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="opacity">0.98999999999999999</property>
+    <property name="has_separator">False</property>
+    <signal handler="on_dlg_openfile_file_activated" name="file_activated"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <object class="GtkButton" id="btn_open_cancel">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="use_stock">True</property>
+                <signal handler="gtk_widget_hide" name="clicked" object="dlg_openfile"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_open">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-open</property>
+                <property name="use_stock">True</property>
+                <signal handler="on_btn_open_clicked" name="clicked"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">btn_open_cancel</action-widget>
+      <action-widget response="0">btn_open</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkFileChooserDialog" id="dlg_savefile">
+    <property name="border_width">5</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="has_separator">False</property>
+    <property name="action">GTK_FILE_CHOOSER_ACTION_SAVE</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox2">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area2">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <object class="GtkButton" id="btn_save_cancel">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="use_stock">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_save">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-save</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">btn_save_cancel</action-widget>
+      <action-widget response="0">btn_save</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkFileChooserDialog" id="dlg_newfile">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">New project</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox3">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area3">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <object class="GtkButton" id="btn_new_cancel">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="use_stock">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_new_open">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-open</property>
+                <property name="use_stock">True</property>
+                <signal handler="on_btn_new_open_clicked" name="clicked"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">btn_new_cancel</action-widget>
+      <action-widget response="0">btn_new_open</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkDialog" id="dlg_newprj">
+    <property name="border_width">5</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox4">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkFrame" id="frame1">
+            <property name="visible">True</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">GTK_SHADOW_NONE</property>
+            <child>
+              <object class="GtkAlignment" id="alignment1">
+                <property name="visible">True</property>
+                <property name="left_padding">12</property>
+                <child>
+                  <object class="GtkEntry" id="ent_newprjname">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">&lt;b&gt;Inserire nome del nuovo progetto&lt;/b&gt;</property>
+                <property name="use_markup">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area4">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <object class="GtkButton" id="btn_newprj_cancel">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="use_stock">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_newprj">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-new</property>
+                <property name="use_stock">True</property>
+                <signal handler="on_btn_newprj_clicked" name="clicked"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">btn_newprj_cancel</action-widget>
+      <action-widget response="0">btn_newprj</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkDialog" id="dlg_loading">
+    <property name="border_width">5</property>
+    <property name="title">Waiting</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_NOTIFICATION</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">win_traceanalyser</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox5">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkVBox" id="vbox3">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkAlignment" id="alignment3">
+                <property name="visible">True</property>
+                <property name="top_padding">15</property>
+                <property name="bottom_padding">15</property>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Loading...
+</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkAlignment" id="alignment2">
+                <property name="visible">True</property>
+                <property name="top_padding">15</property>
+                <property name="bottom_padding">15</property>
+                <property name="left_padding">15</property>
+                <property name="right_padding">15</property>
+                <child>
+                  <object class="GtkProgressBar" id="pgb_loading">
+                    <property name="visible">True</property>
+                    <property name="pulse_step">0.20000000000000001</property>
+                    <property name="text" translatable="yes"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area5">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
